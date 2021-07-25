@@ -42,6 +42,9 @@ public class Main {
         //Excercise 10: Empty Multis
         emptyMulti();
 
+        //Excercise 11: Managing null
+        uniNull();
+        
     }
 
     private static void helloMutiny() {
@@ -136,6 +139,45 @@ public class Main {
 
     private static void emptyMulti() {
         Multi<String> multi = Multi.createFrom().empty();
+    }
+
+    private static Uni<String> findNameById(int id) {
+        if (id == 1)
+            return Uni.createFrom().nullItem();
+        else if (id > 1)
+            return Uni.createFrom().failure(new RuntimeException("Name does not exist"));
+        return Uni.createFrom().item("name");
+    }
+
+    private static void uniNull() {
+        //Same code, but different behavior
+
+        // Get string
+        findNameById(0)
+            .onItem().ifNull().continueWith("Name is null")
+            .onItem().ifNotNull().transform(String::toUpperCase)
+            .subscribe().with(
+                item -> System.out.println(item),
+                failure -> System.out.println(failure.getMessage())
+        );
+
+        //Get null
+        findNameById(1)
+                .onItem().ifNull().continueWith("Name is null")
+                .onItem().ifNotNull().transform(String::toUpperCase)
+                .subscribe().with(
+                item -> System.out.println(item),
+                failure -> System.out.println(failure.getMessage())
+        );
+
+        // Get failure
+        findNameById(2)
+                .onItem().ifNull().continueWith("Name is null")
+                .onItem().ifNotNull().transform(String::toUpperCase)
+                .subscribe().with(
+                item -> System.out.println(item),
+                failure -> System.out.println(failure.getMessage())
+        );
     }
 
 }
