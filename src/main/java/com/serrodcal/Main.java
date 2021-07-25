@@ -27,6 +27,9 @@ public class Main {
         //Excercise 6: Failing Unis
         failingUnis();
 
+        //Excercise 7: Operation to not produce a result
+        voidUni();
+
     }
 
     private static void helloMutiny() {
@@ -98,6 +101,10 @@ public class Main {
             failure -> System.out.println(failure.getMessage())
         );
 
+    }
+
+    private static void voidUni() {
+        Uni<Void> uni = Uni.createFrom().nullItem();
     }
 
 }
