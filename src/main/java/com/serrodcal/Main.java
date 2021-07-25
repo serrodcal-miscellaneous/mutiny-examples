@@ -12,6 +12,9 @@ public class Main {
         //Exercise 2: Mutiny uses a builder API
         builderAPI();
 
+        //Excercise 3: The Uni type
+        uniType();
+
     }
 
     private static void helloMutiny() {
@@ -37,6 +40,13 @@ public class Main {
         uni.onItem().transform(String::toUpperCase);
 
         uni.subscribe().with(item -> System.out.println(">> " + item));
+    }
+
+    private static void uniType() {
+        //A Uni<T> is a specialized stream that emits only an item or a failure.
+        Uni.createFrom().item(1)
+            .onItem().transform(i -> "hello-" + i)
+            .subscribe().with(System.out::println);
     }
 
 }
