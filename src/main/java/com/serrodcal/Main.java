@@ -2,6 +2,7 @@ package com.serrodcal;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.subscription.Cancellable;
 
@@ -29,6 +30,9 @@ public class Main {
 
         //Excercise 7: Operation to not produce a result
         voidUni();
+
+        //Excercise 8: The Multy type
+        multiType();
 
     }
 
@@ -105,6 +109,14 @@ public class Main {
 
     private static void voidUni() {
         Uni<Void> uni = Uni.createFrom().nullItem();
+    }
+
+    private static void multiType() {
+        Multi.createFrom().items(1, 2, 3, 4, 5)
+            .onItem().transform(i -> i * 2)
+            .select().first(3)
+            .onFailure().recoverWithItem(0)
+            .subscribe().with(System.out::println);
     }
 
 }
