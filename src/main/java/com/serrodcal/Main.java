@@ -22,10 +22,10 @@ public class Main {
         //Excercise 3: The Uni type
         uniType();
 
-        //Excercise 4: Subscribing to a Uni
+        //Excercise 4: Subscribing to an Uni
         subscribingUni();
 
-        //Excercise 5: Supplying a Uni
+        //Excercise 5: Supplying an Uni
         supplyingUni();
 
         //Excercise 6: Failing Unis
@@ -51,6 +51,9 @@ public class Main {
 
         //Excercise 13: Recovering from fail
         recoveringFromFail();
+
+        //Excercise 14: Chain an uni with another one
+        chainUnis();
         
     }
 
@@ -203,6 +206,18 @@ public class Main {
         Uni.createFrom().failure(new RuntimeException("Some error"))
                 .onFailure().recoverWithItem("hello")
                 .subscribe().with(System.out::println);
+    }
+
+    private static Uni<String> invokeRemoteGreetingService(String name) {
+        return Uni.createFrom().item("hello " + name);
+    }
+
+    private static void chainUnis() {
+        Uni<String> uni = Uni.createFrom().item("serrodcal");
+
+        uni
+            .onItem().transformToUni(name -> invokeRemoteGreetingService(name)) //Calling a remote service asynchronously
+            .subscribe().with(System.out::println);
     }
 
 }
