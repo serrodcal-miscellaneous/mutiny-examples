@@ -48,6 +48,9 @@ public class Main {
 
         //Excercise 12: From multi to uni of list
         multiToUniOfList();
+
+        //Excercise 13: Recovering from fail
+        recoveringFromFail();
         
     }
 
@@ -194,6 +197,12 @@ public class Main {
                                 System.out.println(">> " + i);
                         }
                 );
+    }
+
+    private static void recoveringFromFail() {
+        Uni.createFrom().failure(new RuntimeException("Some error"))
+                .onFailure().recoverWithItem("hello")
+                .subscribe().with(System.out::println);
     }
 
 }
