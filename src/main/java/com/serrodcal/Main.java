@@ -1,5 +1,6 @@
 package com.serrodcal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -54,7 +55,10 @@ public class Main {
 
         //Excercise 14: Chain an uni with another one
         chainUnis();
-        
+
+        //Excercise 15: Combine several unis (paralelly)
+        combineUnis();
+
     }
 
     private static void helloMutiny() {
@@ -218,6 +222,37 @@ public class Main {
         uni
             .onItem().transformToUni(name -> invokeRemoteGreetingService(name)) //Calling a remote service asynchronously
             .subscribe().with(System.out::println);
+
+        uni
+            .chain(name -> invokeRemoteGreetingService(name))
+            .subscribe().with(System.out::println);
+    }
+
+    private static Uni<Integer> doSomething(Integer i) {
+        return Uni.createFrom().item(i);
+    }
+
+    private static void combineUnis() {
+        List<Uni<?>> unis = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++){
+            Uni<Integer> uni = doSomething(i);
+            unis.add(uni);
+        }
+
+        Uni<Integer> uni = Uni.combine().all().unis(unis)
+            .combinedWith(results -> {
+                int acc = 0;
+                for (Object result: results)
+                    if(result instanceof Integer)
+                        acc += (Integer) result;
+                return acc;
+            }).onFailure().recoverWithUni(failure -> {
+                return Uni.createFrom().item(-1);
+            });
+
+        uni.subscribe().with(System.out::println);
+
     }
 
 }
