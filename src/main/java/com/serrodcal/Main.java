@@ -1,5 +1,7 @@
 package com.serrodcal;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.subscription.Cancellable;
 
@@ -18,6 +20,9 @@ public class Main {
 
         //Excercise 4: Subscribing to a Uni
         subscribingUni();
+
+        //Excercise 5: Supplying a Uni
+        supplyingUni();
 
     }
 
@@ -62,6 +67,15 @@ public class Main {
                                         failure -> System.out.println("Failed with " + failure)
                                     );
         // Note the returned Cancellable: this object allows canceling the operation if need be.
+    }
+
+    private static void supplyingUni() {
+        //The Supplier is called for every subscriber. So, each of them will get a different value.
+        AtomicInteger counter = new AtomicInteger();
+        Uni<Integer> uni = Uni.createFrom().item(() -> counter.getAndIncrement());
+        
+        uni.subscribe().with(item -> System.out.println("Subscriber " + item));
+        uni.subscribe().with(item -> System.out.println("Subscriber " + item));
     }
 
 }
