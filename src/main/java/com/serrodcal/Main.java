@@ -1,5 +1,6 @@
 package com.serrodcal;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import java.util.stream.IntStream;
@@ -44,6 +45,9 @@ public class Main {
 
         //Excercise 11: Managing null
         uniNull();
+
+        //Excercise 12: From multi to uni of list
+        multiToUniOfList();
         
     }
 
@@ -178,6 +182,18 @@ public class Main {
                 item -> System.out.println(item),
                 failure -> System.out.println(failure.getMessage())
         );
+    }
+
+    private static void multiToUniOfList() {
+        Multi<Integer> items = Multi.createFrom().items(1, 2, 3);
+
+        items.collect().asList()
+                .subscribe().with(
+                        item -> {
+                            for(Integer i: item)
+                                System.out.println(">> " + i);
+                        }
+                );
     }
 
 }
