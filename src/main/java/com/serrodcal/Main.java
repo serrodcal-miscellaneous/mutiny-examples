@@ -24,6 +24,9 @@ public class Main {
         //Excercise 5: Supplying a Uni
         supplyingUni();
 
+        //Excercise 6: Failing Unis
+        failingUnis();
+
     }
 
     private static void helloMutiny() {
@@ -76,6 +79,25 @@ public class Main {
         
         uni.subscribe().with(item -> System.out.println("Subscriber " + item));
         uni.subscribe().with(item -> System.out.println("Subscriber " + item));
+    }
+
+    private static void failingUnis() {
+        // Pass an exception directly:
+        Uni<Integer> failed1 = Uni.createFrom().failure(new Exception("directly boom"));
+
+        // Pass a supplier called for every subscriber:
+        Uni<Integer> failed2 = Uni.createFrom().failure(() -> new Exception("supplier boom"));
+
+        failed1.subscribe().with(
+            item -> System.out.println(item),
+            failure -> System.out.println(failure.getMessage())
+        );
+
+        failed2.subscribe().with(
+            item -> System.out.println(item),
+            failure -> System.out.println(failure.getMessage())
+        );
+
     }
 
 }
