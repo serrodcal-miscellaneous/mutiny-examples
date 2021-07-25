@@ -2,6 +2,8 @@ package com.serrodcal;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import java.util.stream.IntStream;
+
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.subscription.Cancellable;
@@ -33,6 +35,9 @@ public class Main {
 
         //Excercise 8: The Multy type
         multiType();
+
+        //Excercise 9: Supplying a Multi
+        supplyingMulti();
 
     }
 
@@ -117,6 +122,13 @@ public class Main {
             .select().first(3)
             .onFailure().recoverWithItem(0)
             .subscribe().with(System.out::println);
+    }
+
+    private static void supplyingMulti() {
+        AtomicInteger counter = new AtomicInteger();
+        Multi<Integer> multi = Multi.createFrom().items(() -> IntStream.range(counter.getAndIncrement(), counter.get() * 2).boxed());
+        multi.subscribe().with(item -> System.out.println(item));
+        multi.subscribe().with(item -> System.out.println(item));
     }
 
 }
