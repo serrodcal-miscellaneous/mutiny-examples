@@ -59,6 +59,9 @@ public class Main {
         //Excercise 15: Combine several unis (paralelly)
         combineUnis();
 
+        //Excercise 16: Combine several unis (paralelly) with a failure
+        combineUnisWithFailure();
+
     }
 
     private static void helloMutiny() {
@@ -250,6 +253,35 @@ public class Main {
             }).onFailure().recoverWithUni(failure -> {
                 return Uni.createFrom().item(-1);
             });
+
+        uni.subscribe().with(System.out::println);
+
+    }
+
+    private static Uni<Integer> doSomethingWrong(Integer i) {
+        if (i == 2)
+            return Uni.createFrom().failure(new RuntimeException("error"));
+        return Uni.createFrom().item(i);
+    }
+
+    private static void combineUnisWithFailure() {
+        List<Uni<?>> unis = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++){
+            Uni<Integer> uni = doSomethingWrong(i);
+            unis.add(uni);
+        }
+
+        Uni<Integer> uni = Uni.combine().all().unis(unis)
+                .combinedWith(results -> {
+                    int acc = 0;
+                    for (Object result: results)
+                        if(result instanceof Integer)
+                            acc += (Integer) result;
+                    return acc;
+                }).onFailure().recoverWithUni(failure -> {
+                    return Uni.createFrom().item(-1);
+                });
 
         uni.subscribe().with(System.out::println);
 
