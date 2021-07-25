@@ -39,6 +39,9 @@ public class Main {
         //Excercise 9: Supplying a Multi
         supplyingMulti();
 
+        //Excercise 10: Empty Multis
+        emptyMulti();
+
     }
 
     private static void helloMutiny() {
@@ -129,6 +132,10 @@ public class Main {
         Multi<Integer> multi = Multi.createFrom().items(() -> IntStream.range(counter.getAndIncrement(), counter.get() * 2).boxed());
         multi.subscribe().with(item -> System.out.println(item));
         multi.subscribe().with(item -> System.out.println(item));
+    }
+
+    private static void emptyMulti() {
+        Multi<String> multi = Multi.createFrom().empty();
     }
 
 }
