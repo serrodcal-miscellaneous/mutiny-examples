@@ -1,6 +1,7 @@
 package com.serrodcal;
 
 import io.smallrye.mutiny.Uni;
+import io.smallrye.mutiny.subscription.Cancellable;
 
 public class Main {
 
@@ -14,6 +15,9 @@ public class Main {
 
         //Excercise 3: The Uni type
         uniType();
+
+        //Excercise 4: Subscribing to a Uni
+        subscribingUni();
 
     }
 
@@ -47,6 +51,17 @@ public class Main {
         Uni.createFrom().item(1)
             .onItem().transform(i -> "hello-" + i)
             .subscribe().with(System.out::println);
+    }
+
+    private static void subscribingUni() {
+        // Remember: if you don’t subscribe, nothing is going to happen. 
+        // What’s more, the pipeline is materialized for each subscription.
+        Cancellable cancellable = Uni.createFrom().item("subscribed")
+                                    .subscribe().with(
+                                        item -> System.out.println(item),
+                                        failure -> System.out.println("Failed with " + failure)
+                                    );
+        // Note the returned Cancellable: this object allows canceling the operation if need be.
     }
 
 }
